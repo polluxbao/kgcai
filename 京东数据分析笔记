@@ -1,0 +1,349 @@
+Python数据分析（体验课）
+    本次课程案例是京东销售数据分析，目标是帮助你建立数据分析的基本思考框架，初步掌握使用Python进行数据分析的基本流程和方法。
+
+京东数据分析笔记
+
+问题：
+各商品类目下，商品的数量、销量和销售额是多少？
+“笔记本”分类下，商品的 最高、最低、平均价格 是多少？  
+具体的价格是怎么分布的？
+“笔记本”分类下，爆品是哪个？
+销量是多少？
+价格是多少？
+“笔记本”分类下，销量与价格是否具有相关性？
+
+数据整理的主要内容
+数据评估
+检查数据的行、列数
+缺失值检查
+数据重复检查
+数据清洗
+删除无关列
+添加新列
+缺失数据处理
+重复数据处理
+
+需要解决的问题：
+如何查看一个数据集的行数和列数
+如何检查并处理数据集中的缺失值
+如何检查并处理数据集中的重复数据
+如何在Python中删除和添加数据列
+
+案例Part2：整理数据
+说明：本节课是以名为df的数据集为例，来介绍数据的评估和清洗。
+1、数据评估
+1）检查数据的行、列数
+        代码实现：df.shape
+2）缺失值检查
+        代码实现：df.info()
+3）数据重复检查
+代码实现：小数据集df.duplicated()
+代码实现：大数据集df.duplicated().sum()
+2、数据清洗
+1）删除无关列
+                代码实现：df.drop()
+2）添加新列
+                代码实现：df['sales']=df['pro_sales_num']*df['sale_price']
+3）缺失数据处理
+                代码实现：df.dropna()
+4）重复数据处理
+                代码实现：df.drop_duplicates()
+
+================== 京东数据分析 ====================
+# 引入Pandas库
+import pandas as pd
+
+# 导入数据集
+df = pd.read_csv('data.csv',encoding='utf-8')
+
+================== 第1步：数据评估 ====================
+#数据评估
+#检查数据集的行数和列数
+df.shape
+out[ ]: (703500,41)
+
+#缺失值检查
+df.info()
+查看列表行数，如果<整表行数，证明有缺失值
+
+
+# 数据重复检查
+df.duplicated().sum()
+
+
+
+
+================== 第2步：数据清洗 ====================
+# 目标1：各商品类目下，商品的数量、销量和销售额是多少？
+# 销售额未提供，需要商品价格
+# 需要：pro_type、pro_sales_num、pro_name、sale_price
+# 目标2：“笔记本”分类下，商品的 最高、最低、平均价格 是多少？具体的价格是怎么分布的？
+# 需要：class_small、sale_price、pro_name
+# 目标3：“笔记本”分类下，爆品是哪个？
+
+class_small	商品分类 小类
+pro_code	商品编号
+pro_sales_num
+商品销量|交易量
+pro_type	商品类目
+sale_price	商品价格
+pro_name	商品名称
+
+# 显示所有列的名称
+df.columns
+
+# 数据清洗
+# 删除无关列
+
+
+# df.drop( [...], axis=1, inplace=True )
+# 检查：删除结果
+
+
+# 添加新列：销售额
+df['sales'] = df['pro_sales_num'] * df['sale_price']
+
+# 检查：新列添加结果
+df.head()
+
+
+# 缺失数据处理
+直接将缺失值过滤掉
+用指定的数字进行填充
+df.dropna(inplace=True)
+
+# 重复数据处理
+df.drop_duplicates(inplace=True)
+
+# 检查：重复数据处理结果
+df.duplicated().sum()
+
+
+
+
+   
+课程小结：学到了什么？
+    在进行数据分析之前，需要对导入Python中的数据集进行整理，发现并解决数据中的问题，这是非常重要的一步，直接影响着分析结果的准确性。我们通过数据评估发现数据中的问题，通过数据清洗来解决这些问题。在本课中，数据评估工作主要有检查数据的行、列数，缺失值检查和数据重复检查，在数据清洗方面，主要工作有删除跟问题无关的数据列，添加解决问题所需要的新的数据列，缺失数据处理以及重复数据处理。
+    以下几个问题，都是以名为df的数据集为例进行操作的。
+1、如何查看一个数据集的行数和列数？
+    在代码框中输入：df.shape
+    结果中，第一个数字代表数据集的行数，第二个是列数。
+
+2、如何检查并处理数据集中的缺失值？
+1）检查缺失值的方法
+    通过查看数据集的简明摘要信息来检查缺失值，在代码框中输入：df.info()
+    在结果中，将每一列非空值的数量跟数据集的行数进行对比，如果小于数据集的行数，说明该列中存在缺失值。
+2）处理缺失值的方法
+    本节课使用的方法是删除缺失值，在代码框中输入：df.dropna(inplace=True)
+    dropna默认删除所有含有缺失值的行，在括号内写上inplace=True，可以直接在原数据集上删除含有缺失值的行。
+
+3、如何检查并处理数据集中的重复数据？
+1）检查重复数据的方法
+    对于比较小的数据集，使用duplicated检查各行是否重复，在代码框中输入： 
+    df.duplicated()
+    结果中，FALSE是首次出现的行，True不是首次出现的行，表示这一行跟前面的某行重复了
+    对于比较大的数据集，使用：df.duplicated().sum()
+    结果中的数字表示的是数据重复的行数，例如结果是280800，说明有280800行数据重复。
+    注意：这里检查的是整行重复。
+2）处理重复数据的方法
+    直接在原数据集上删除重复的行，在代码框中输入：
+    df.drop_duplicates(inplace=True)
+    默认会删除整行重复的数据，并且会默认保留第一个出现的数据行；inplace=True，可以直接在原数据集上删除重复的行
+
+4、如何在Python中删除和添加数据列？
+1）删除列
+    以删除列标签为'class_strong'和'delivery_place'这两个列为例，在代码框中输入：
+    df.drop([ 'class_strong', 'delivery_place'],axis=1,inplace=True)
+    注意需要用方括号[]将列标签括起来，asix=1表示删除的是列，inplace=True表示在原数据集进行操作。
+2）添加列
+    在Python中，通过直接给新列赋值的方式添加新列，例如，给名为df的数据集添加销售额列，方法是在代码框中输入：
+    df['sales']=df['pro_sales_num']*df['sale_price']
+
+数据探索和得出结论
+学习目标：
+如何对指定列的值进行计数
+如何对数据进行分组计算
+如何根据指定列中的指定值对数据集进行筛选
+如何获取数据集中指定列的描述性统计信息，如：最大值、最小值、平均值
+如何获取数据集中指定列中最大值的位置信息，并根据该位置信息获取指定列的数据值
+如何利用直方图、散点图对数据进行探索
+   
+Part3：数据探索&得出结论
+说明：本节课是以名为df和df_laptop的数据集为例，来介绍如何使用Python解决问题确定阶段提出的四个问题。
+
+问题一：各商品类目下，商品的数量、销量和销售额是多少？
+1）计算各类目下商品的数量
+    代码实现：
+    df['pro_type']. value_counts()
+2）计算各类目下商品的销量
+    代码实现：
+    df['pro_sales_num'].groupby(df['pro_type']).sum()
+3）计算各类目下商品的销售额
+    代码实现：
+    与计算销量的方法一致
+
+问题二：在“笔记本”小分类下，商品的最高、最低和平均价格是多少？具体的价格分布情况是怎样的？
+1）筛选出“笔记本”小分类下的所有商品代码实现：
+    df_laptop=df[df['class_small']=='笔记本']
+2）计算商品的最高、最低和平均价格
+代码实现1：
+df_laptop ['sale_price'].max()
+df_laptop ['sale_price'].min()
+df_laptop ['sale_price'].mean()
+代码实现2：
+df_laptop ['sale_price'].describe()
+3）价格分布情况
+        使用直方图表示，代码实现：
+import matplotlib.pyplot as plt
+df_laptop ['sale_price'].hist()
+plt.show()
+
+问题三：笔记本中的爆品是哪个？销量是多少？价格是多少？
+1）获取销量最高的商品所在行的位置信息
+    代码实现：
+    index=df_laptop['pro_sales_num'].idxmax()
+2）爆品的名称
+    代码实现：
+    df_laptop['pro_name'][index]
+3）爆品的销量、价格
+    代码实现：方法同上
+
+问题四：在“笔记本”小分类下，销量与价格是否具有相关性？
+    通过散点图探究销量与价格之间的关系
+    代码实现：
+    df_laptop.plot(x='sale_price',y='pro_sales_num',kind='scatter')
+    plt.show()
+
+================== Jupyter Notebook 试验 =======================
+# 问题一：各商品类目下，商品的数量、销量和销售额是多少？
+# 1. 各类目下商品的数量
+    df['pro_type']. value_counts()
+
+
+# 2. 各类目下商品的销量
+ df['pro_sales_num'].groupby(df['pro_type']).sum()
+# 类似于Excel的分类汇总
+
+# 对结果进行排序
+ df['pro_sales_num'].groupby(df['pro_type']).sum().sort_values(ascending=False)
+
+
+# 3. 各类目下商品的销售额
+df['sales'].groupby(df['pro_type']).sum().sort_values(ascending=False)
+
+
+
+
+# 问题二：在“笔记本”小分类下，商品的最高、最低和平均价格是多少？具体的价格分布情况是怎样的？
+# 1. 筛选出“笔记本”小分类下的所有商品代码实现：
+df_laptop = df[ df['class_small'] == '笔记本' ]
+
+
+# 2. 计算商品的最高、最低和平均价格
+代码实现1：
+df_laptop ['sale_price'].max()
+df_laptop ['sale_price'].min()
+df_laptop ['sale_price'].mean()
+
+
+代码实现2：
+df_laptop ['sale_price'].describe()
+
+
+# 3. 具体的价格分布情况是怎样的？
+import matplotlib.pyplot as plt
+df_laptop ['sale_price'].hist()
+plt.show()
+
+
+df_laptop['sale_price'].plot(kind='hist')
+
+
+# 问题三：笔记本中的爆品是哪个？销量是多少？价格是多少？
+# 1. 获取销量最高的商品所在行的位置信息
+ index=df_laptop['pro_sales_num'].idxmax()
+# 2. 爆品的名称
+    df_laptop['pro_name'][index]
+# 3. 爆品的销量
+    df_laptop['pro_sales_num'][index]
+# 4. 爆品价格
+    df_laptop['sales_price'][index]
+
+
+# 问题四：在“笔记本”小分类下，销量与价格是否具有相关性？
+# 通过散点图探究销量与价格之间的关系
+    df_laptop.plot(x='sale_price',y='pro_sales_num',kind='scatter')
+    plt.show()
+
+练习题：
+下列哪个函数可以用来绘制图形？
+A、describe()
+B、hist()
+C、scatter()
+D、value_counts()
+E、idxmax()
+F、groupby()
+G、sum()
+
+value_counts()是计算每个值出现的次数；
+groupby()对数据进行分组；
+sum()是求和函数；
+describe()是一次性产生多个汇总统计，其中包括最大值、最小值和平均值；
+idxmax()可以获取指定列最大值所在行的位置信息，
+scatter()是用来绘制散点图的，
+hist()是绘制直方图的。
+
+提高练习（选做）
+1、使用query筛选出笔记本小分类下的所有商品
+提示：问题二中的筛选方法是df[df['class_small']=='笔记本']，使用query() 的等效语句是df.query('class_small== "笔记本"')
+
+2、使用query筛选出价格大于3000的笔记本
+df.query('class_small=="笔记本" and sale_price > 3000')
+
+
+
+
+   
+Part4：展示结果
+1、数据可视化
+1）绘制柱状图
+代码实现：
+sales_num.plot(kind='bar')
+
+
+2）解决可视化图表的中文字体问题
+代码实现：
+from pylab import mpl
+mpl.rcParams['font.sans-serif']=['SimHei']
+3）美化可视化图表
+为图表添加标题、颜色、透明度和轴标签，代码实现：
+sales_num.plot(kind='bar',title='各类目的商品数量',color='blue',alpha=0.5)
+plt.xlabel('商品类目')
+plt.ylabel('商品数量')
+
+
+销量柱状图
+sales_num=df['sales'].groupby(df['pro_type']).sum().sort_values(ascending=False)
+sales_num.plot(kind='bar',title='各类目的商品销量',color='blue',alpha=0.5)
+plt.xlabel('商品类目')
+plt.ylabel('商品销量')
+
+笔记本价格分布情况
+
+
+
+
+2、制作分析报告
+1）Markdown单元格使用方法介绍
+a.标题设置
+# 一级标题
+## 二级标题
+### 三级标题
+#### 四级标题
+##### 五级标题
+###### 六级标题
+b.强调效果
+斜体：方法一，*文本*；方法二，_文本_
+粗体：方法一，**文本**；方法二，__文本__
+2）数据分析报告要点
+        报告名称、报告说明、数据分析过程和可视化图表和结论。
